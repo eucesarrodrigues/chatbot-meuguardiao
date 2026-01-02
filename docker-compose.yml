@@ -1,0 +1,57 @@
+services:
+  api:
+    build: ./app
+    container_name: meuguardiao_api
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=postgres
+      - DB_NAME=meuguardiao
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - EVOLUTION_API_URL=http://evolution:8080
+      # Load other env vars from .env file
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - evolution
+    networks:
+      - app-network
+    volumes:
+      - ./app:/app/app
+
+  postgres:
+    image: postgres:15
+    container_name: meuguardiao_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: meuguardiao
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  evolution:
+    image: attias/evolution-api:v2.0.0
+    container_name: meuguardiao_evolution
+    ports:
+      - "8080:8080"
+    environment:
+      - AUTHENTICATION_API_KEY=mysecretkey
+      # Add other Evolution API env vars as needed
+    volumes:
+      - evolution_store:/evolution/store
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  evolution_store:

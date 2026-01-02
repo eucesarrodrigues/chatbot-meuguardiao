@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+tortoise-orm
+asyncpg
+openai
+httpx
+python-multipart
+pydantic-settings
+google-generativeai
