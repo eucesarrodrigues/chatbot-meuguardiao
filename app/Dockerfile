@@ -12,10 +12,11 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code from parent directory to /app/app
-# Context: 'app' service build context is '.' which maps to '/app' locally in docker-compose
-# So COPY . . copies the contents of /app (local) to /app (container)
-COPY . .
+# Copy application code into /app/app to create the 'app' package structure
+COPY . /app/app
+
+# Set PYTHONPATH
+ENV PYTHONPATH=/app
 
 # Expose port
 EXPOSE 8000
